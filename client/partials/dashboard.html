@@ -1,0 +1,22 @@
+<div ng-controller='pollsController'>
+	<a href='#/create'>Create a New Poll</a> | <a href='#/'>Logout</a>
+	<h1>Current Polls</h1>
+	<input class='col-md-offset-10' type='text' ng-model='filter_question' placeholder='filter' >
+
+	<table class='table'>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Survey Question</th>
+				<th>Date Posted</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tr ng-repeat="question in polls | filter: filter_question track by $index | orderBy:'queston'">
+			<td>{{question.name}}</td>
+			<td><a ng-click='showPoll(question._id)'>{{question.question}}</a></td>
+			<td>{{question.created_at | date: 'MMMM dd, yyyy' }}</td>
+			<td ng-if='question.name == user'><a ng-click='deletePoll(question._id)'>Delete</a>
+		</tr>
+	</table>
+</div>

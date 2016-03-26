@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 var fs = require('fs');
 
-// replace DB_NAME with database name for project
-// mongoose.connect('mongodb://localhost/DB_NAME');
+mongoose.connect('mongodb://localhost/mean_app');
 
 var models_path = __dirname + '/../models';
 

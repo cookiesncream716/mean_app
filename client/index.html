@@ -10,13 +10,143 @@
 		 	var myApp = angular.module('myApp', ['ngRoute']);
 		 	myApp.config(function($routeProvider){
 		 		$routeProvider
-		 			.when
+		 			.when('/', {
+		 				templateUrl:'partials/name.html'
+		 			})
+		 			.when('/dashboard', {
+		 				templateUrl: 'partials/dashboard.html'
+		 			})
+		 			.when('/create', {
+		 				templateUrl: 'partials/create.html'
+		 			})
+		 			.when('/question/:id', {
+		 				templateUrl: 'partials/poll.html'
+		 			})
+		 			.otherwise({
+		 				redirectTo: '/'
+		 			});
+		 	});
+
+		 	myApp.factory('userFactory', function($http){
+		 		var users = [];
+		 		var factory = {};
+		 		factory.name = function(info, callback){
+		 			// console.log(info)
+		 			users.push(info.name);
+		 			callback(users);
+		 		};
+		 		factory.get_name = function(callback){
+		 			callback(users);
+		 		}
+		 		return factory;
+		 	})
+
+		 	myApp.factory('pollFactory', function($http){
+		 		var polls = [];
+		 		var poll = [];
+		 		var factory = {};
+		 		factory.create = function(poll, callback){
+		 			// console.log(poll)
+		 			$http.post('/polls', poll).success(function(output){
+		 				callback()
+		 			});
+		 		};
+		 		factory.index = function(callback){
+		 			// console.log('factory')
+		 			$http.get('/polls').success(function(output){
+		 				polls = output;
+		 				callback(polls);
+		 			})
+		 		};
+		 		factory.show = function(id, callback){
+		 			// console.log(id);
+		 			$http.post('/polls/' + id).success(function(output){
+		 				// console.log("output")
+		 				// console.log(output)
+		 				poll = output;
+		 				callback(poll);
+		 			})
+		 		}
+		 		factory.update = function(id, callback){
+		 			// var opt_id = {id:id}
+		 			$http.post('/options/' + id).success(function(output){
+		 				callback()
+		 			})
+		 		}
+		 		factory.delete = function(id, callback){
+		 			$http.delete('/polls/' + id).success(function(output){
+		 				callback()
+		 			})
+		 		}
+		 		return factory;
+		 	});
+
+		 	myApp.controller('voteController', function($scope, $location, $routeParams, pollFactory, userFactory){
+		 		var id = $routeParams.id;
+		 		pollFactory.show(id, function(data){
+		 			$scope.poll = data
+		 		})
+		 		$scope.voteFor = function(opt_id){
+		 			// console.log(id)
+		 			pollFactory.update(opt_id, function(data){
+		 				pollFactory.show(id, function(data){
+		 					$scope.poll = data
+		 				})
+		 			})
+		 		}
+		 	})
+
+		 	myApp.controller('createController', function($scope, pollFactory, $location, userFactory){
+		 		userFactory.get_name(function(data){
+		 			$scope.user = data[0];
+		 		});
+		 		$scope.createPoll = function(){
+		 			// console.log($scope.newQuestion);
+		 			pollFactory.create($scope.newQuestion, function(results){
+		 				$location.path('/dashboard')
+		 				// console.log('returned')
+		 			})
+		 		}
+		 	})
+
+		 	myApp.controller('pollsController', function($scope, $location, userFactory, pollFactory, userFactory){
+		 		userFactory.get_name(function(data){
+		 			$scope.user = data[0];
+		 			// console.log($scope.user)
+		 		});
+		 		pollFactory.index(function(data){
+		 			// console.log(data)
+		 			$scope.polls = data
+		 		})
+		 		$scope.showPoll = function(id){
+		 			// console.log(id)
+		 			$location.path('/question/' + id);
+		 		}
+		 		$scope.deletePoll = function(id){
+		 			pollFactory.delete(id, function(data){
+		 				pollFactory.index(function(data){
+		 					$scope.polls = data
+		 				})
+		 			})
+		 		}
+		 	});
+
+		 	myApp.controller('namesController', function($scope, $location, userFactory){
+
+		 		$scope.userName = function(){
+		 			// console.log($scope.newName.name);
+		 			userFactory.name($scope.newName, function(data){
+		 				$scope.userName = {};
+		 				$location.path('/dashboard')
+		 			})
+		 		}
 		 	})
 		</script>
 	</head>
 	<body ng-app = 'myApp'>
 		<div class='container'>
-			<div ng-view = ''
+			<div ng-view = ''>
+			</div>
 		</div>
 	</body>
 </html>

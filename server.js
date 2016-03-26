@@ -12,5 +12,5 @@ require('./server/config/routes.js')(app);
 app.use(express.static(path.join(__dirname, './client')));
 
 app.listen(8000, function(){
-	console.log('Listening for min mean store on 8000');
+	console.log('Listening for mean app on 8000');
 });
