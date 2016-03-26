@@ -38,6 +38,10 @@
 		 		factory.get_name = function(callback){
 		 			callback(users);
 		 		}
+		 		factory.logout = function(callback){
+		 			users = [];
+		 			callback()
+		 		}
 		 		return factory;
 		 	})
 
@@ -110,6 +114,7 @@
 		 	})
 
 		 	myApp.controller('pollsController', function($scope, $location, userFactory, pollFactory, userFactory){
+
 		 		userFactory.get_name(function(data){
 		 			$scope.user = data[0];
 		 			// console.log($scope.user)
@@ -129,10 +134,18 @@
 		 				})
 		 			})
 		 		}
+		 		$scope.logout = function(){
+		 			console.log('logout')
+		 			userFactory.logout(function(data){
+		 				$location.path('/')
+		 			})
+		 		}
 		 	});
 
 		 	myApp.controller('namesController', function($scope, $location, userFactory){
-
+		 		// factory.logout(function(data){
+		 		// 	$scope.userName = data;
+		 		// })
 		 		$scope.userName = function(){
 		 			// console.log($scope.newName.name);
 		 			userFactory.name($scope.newName, function(data){

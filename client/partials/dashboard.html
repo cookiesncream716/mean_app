@@ -1,5 +1,5 @@
 <div ng-controller='pollsController'>
-	<a href='#/create'>Create a New Poll</a> | <a href='#/'>Logout</a>
+	<a href='#/create'>Create a New Poll</a> | <a ng-click='logout()'>Logout</a>
 	<h1>Current Polls</h1>
 	<input class='col-md-offset-10' type='text' ng-model='filter_question' placeholder='filter' >
 
