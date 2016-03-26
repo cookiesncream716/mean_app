@@ -93,9 +93,10 @@
 		 		$scope.voteFor = function(opt_id){
 		 			// console.log(id)
 		 			pollFactory.update(opt_id, function(data){
-		 				pollFactory.show(id, function(data){
-		 					$scope.poll = data
-		 				})
+		 				$location.path('/dashboard')
+		 				// pollFactory.show(id, function(data){
+		 				// 	$scope.poll = data
+		 				// })
 		 			})
 		 		}
 		 	})
